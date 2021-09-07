@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
+  "bin": "./app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/q673115816/wyy-live-rtc.git"
