@@ -1,13 +1,37 @@
 const app = require('express')();
 const server = require('http').createServer(app);
 
+const io = require('socket.io')(server, { cors: true });
+
+const hash = new Map
+
+hash.set(010, {
+    password: '010110',
+    title: '测试房',
+    user: 'admin'
+})
+
 app.get('/', (req, res) => {
     res.send('hello rtc')
 })
 
-const io = require('socket.io')(server, { cors: true });
+app.get('/count', (req, res) => {
+    res.json({
+        code: 200,
+        data: {
+            count: hash.size
+        }
+    })
+})
 
-const hash = new Map
+app.get('/list', (req, res) => {
+    res.json({
+        code: 200,
+        data: {
+            list: hash.entries()
+        }
+    })
+})
 
 io.on('connection', (socket) => { 
     
