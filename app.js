@@ -1,4 +1,9 @@
 const app = require('express')();
+const helmet = require('helmet')
+const cors = require('cors')
+app.use(cors())
+app.use(helmet())
+
 const server = require('http').createServer(app);
 
 const io = require('socket.io')(server, { cors: true });
