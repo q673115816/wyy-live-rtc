@@ -5,10 +5,11 @@ const io = require('socket.io')(server, { cors: true });
 
 const hash = new Map
 
-hash.set(010, {
+hash.set(7, {
     password: '010110',
     title: '测试房',
-    user: 'admin'
+    user: 'admin',
+    banner: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20181226%2Ffab5d53db33e451aa77bd0e2b29eb1fa.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1633623474&t=95f0190c1c24be3e3a2e6c1e809d2b61'
 })
 
 app.get('/', (req, res) => {
@@ -28,7 +29,7 @@ app.get('/list', (req, res) => {
     res.json({
         code: 200,
         data: {
-            list: hash.entries()
+            list: [...hash.entries()]
         }
     })
 })
