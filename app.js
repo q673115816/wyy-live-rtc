@@ -10,7 +10,7 @@ const io = require('socket.io')(server, { cors: true });
 
 const hash = new Map
 
-hash.set(7, {
+hash.set('7', {
     password: '010110',
     title: '测试房',
     user: 'admin',
@@ -24,18 +24,15 @@ app.get('/', (req, res) => {
 app.get('/count', (req, res) => {
     res.json({
         code: 200,
-        data: {
-            count: hash.size
-        }
+        data: hash.size
     })
 })
 
 app.get('/list', (req, res) => {
+    const data = [...hash.entries()].map(([key, {title, user, banner}]) => [key, {title, user, banner}])
     res.json({
         code: 200,
-        data: {
-            list: [...hash.entries()]
-        }
+        data
     })
 })
 
