@@ -70,5 +70,5 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3333
 
 server.listen(PORT, () => {
-    console.log(`server work ${port}`)
+    console.log(`server work ${PORT}`)
 });
