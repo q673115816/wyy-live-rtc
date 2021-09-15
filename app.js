@@ -14,6 +14,7 @@ hash.set('7', {
     password: '010110',
     title: '测试房',
     user: 'admin',
+    viewer: 10,
     banner: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20181226%2Ffab5d53db33e451aa77bd0e2b29eb1fa.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1633623474&t=95f0190c1c24be3e3a2e6c1e809d2b61'
 })
 
@@ -45,10 +46,24 @@ io.on('connection', (socket) => {
         socket.emit('create-success', '创建成功回调')
     })    
 
-    socket.on('join', (data) => {
+    socket.on('join', async (data) => {
         const {uid} = data
+        const room = hash.get(uid)
+        if(!room) return socket.emit('join-error', '房间不存在')
+        const {viewer} = room
+        const users = await io.in(room).allSockets()
+        const roomCount = users.size
+        if (roomCount >= viewer) return socket.emit('join-error', '房间满员')
         socket.join(uid)
         socket.emit('join-success', '加入成功回调')
+    })
+
+    socket.on('leave', (data) => {
+        const {uid} = data
+        socket
+            .leave(uid)
+        socket
+            .emit('message', '离开房间')
     })
 
     socket.on('close', (config) => {
