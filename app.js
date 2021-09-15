@@ -66,6 +66,9 @@ io.on('connection', (socket) => {
         socket.emit('disconnect-success', '断开成功回调')
     })
  });
-server.listen(3333);
 
-module.exports = server
+const PORT = process.env.PORT || 3333
+
+server.listen(PORT, () => {
+    console.log(`server work ${port}`)
+});
