@@ -3,7 +3,7 @@ const helmet = require('helmet')
 const cors = require('cors')
 const util = require('util')
 const app = express();
-const http = require('http')
+const https = require('https')
 app
 .use(cors())
 .use(helmet())
@@ -43,13 +43,14 @@ app.get('/list', (req, res) => {
 })
 
 app.post('/sentry', (req, res) => {
+    console.log('进入sentry')
     // res.json(util.inspect(req.body))
     // console.log(req.body)
     // res.send(req.body)
 
     const options = {
         host: 'https://oapi.dingtalk.com',
-        port: 80,
+        port: 443,
         path: '/robot/send?access_token=7b357929ac3f5950a3bbc2483b467a5dd6b8476b6e1593097d336204b625475a',
         method: 'POST',
         headers: {
@@ -73,7 +74,7 @@ app.post('/sentry', (req, res) => {
         "msgtype": "text"
     })
 
-    const request = http.request(options, (res) => {
+    const request = https.request(options, (res) => {
         console.log(`STATUS: ${res.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
         res.setEncoding('utf8');
