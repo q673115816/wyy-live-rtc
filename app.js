@@ -1,9 +1,13 @@
-const app = require('express')();
+const express = require('express')
 const helmet = require('helmet')
 const cors = require('cors')
-app.use(cors())
-app.use(helmet())
-
+const util = require('util')
+const app = express();
+app
+.use(cors())
+.use(helmet())
+.use(express.urlencoded({extended: true}))
+    .use(express.json({ type: 'application/json' }))
 const server = require('http').createServer(app);
 
 const io = require('socket.io')(server, { cors: true });
@@ -35,6 +39,11 @@ app.get('/list', (req, res) => {
         code: 200,
         data
     })
+})
+
+app.post('/sentry', (req, res) => {
+    // res.json(util.inspect(req.body))
+    res.send(req.body)
 })
 
 io.on('connection', (socket) => { 
