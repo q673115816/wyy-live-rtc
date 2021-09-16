@@ -57,7 +57,7 @@ app.post('/sentry', (req, res) => {
         }
     }
 
-    const postData = {
+    const postData = JSON.stringify({
         "at": {
             "atMobiles": [
                 "180xxxxxx"
@@ -71,7 +71,7 @@ app.post('/sentry', (req, res) => {
             "content": "网易云线上报错"
         },
         "msgtype": "text"
-    }
+    })
 
     const request = http.request(options, (res) => {
         console.log(`STATUS: ${res.statusCode}`);
