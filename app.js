@@ -43,6 +43,7 @@ app.get('/list', (req, res) => {
 
 app.post('/sentry', (req, res) => {
     // res.json(util.inspect(req.body))
+    console.log(req.body)
     res.send(req.body)
 })
 
