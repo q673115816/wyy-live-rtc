@@ -3,6 +3,7 @@ const helmet = require('helmet')
 const cors = require('cors')
 const util = require('util')
 const app = express();
+const http = require('http')
 app
 .use(cors())
 .use(helmet())
@@ -45,6 +46,52 @@ app.post('/sentry', (req, res) => {
     // res.json(util.inspect(req.body))
     console.log(req.body)
     res.send(req.body)
+
+    const options = {
+        host: 'https://oapi.dingtalk.com',
+        port: 80,
+        path: '/robot/send?access_token=7b357929ac3f5950a3bbc2483b467a5dd6b8476b6e1593097d336204b625475a',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const postData = {
+        "at": {
+            "atMobiles": [
+                "180xxxxxx"
+            ],
+            "atUserIds": [
+                "章忠善"
+            ],
+            "isAtAll": true
+        },
+        "text": {
+            "content": "网易云线上报错"
+        },
+        "msgtype": "text"
+    }
+
+    const request = http.request(options, (res) => {
+        console.log(`STATUS: ${res.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+        });
+        res.on('end', () => {
+            console.log('No more data in response.');
+        });
+    });
+
+    request.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    // Write data to request body
+    request.write(postData);
+    request.end();
 })
 
 io.on('connection', (socket) => { 
