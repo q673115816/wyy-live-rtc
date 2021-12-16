@@ -1,9 +1,7 @@
 const express = require('express')
 const helmet = require('helmet')
 const cors = require('cors')
-const util = require('util')
 const app = express();
-const https = require('https')
 app
 .use(cors())
 .use(helmet())
@@ -35,10 +33,9 @@ app.get('/count', (req, res) => {
 })
 
 app.get('/list', (req, res) => {
-    const data = [...hash.entries()].map(([key, {title, user, banner}]) => [key, {title, user, banner}])
     res.json({
         code: 200,
-        data
+        data: [...hash.values()]
     })
 })
 
@@ -73,7 +70,7 @@ io.on('connection', (socket) => {
 
     socket.on('close', (config) => {
         const {uid} = config
-        if(!hash.get(uid)) return
+        if(!hash.has(uid)) return
         socket.to(uid).emit('close')
     })
 
