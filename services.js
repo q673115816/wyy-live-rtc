@@ -6,10 +6,19 @@ const { Schema, model } = mongoose
 const liveSchema = new Schema({
     password: String,
     title: String,
-    uid: String,
+    uid: {
+        type: String,
+        unique: true,
+    },
     user: String,
     viewer: Number,
     banner: String,
+    sdp: String,
+}, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: true,
+    }
 });
 
 const liveModel = model('Live', liveSchema)

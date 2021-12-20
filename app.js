@@ -25,7 +25,6 @@ app.get('/count', async (req, res) => {
 
 app.get('/list', async (req, res) => {
     const data = await liveModel.find({}, { _id: false, __v: false })
-    console.log(data)
     res.json({
         code: 200,
         data
@@ -37,9 +36,15 @@ io.on('connection', (socket) => {
     socket.on('create', async (config) => {
         const { uid } = config
         socket.join(uid)
-        const newLiveModel = new liveModel(config)
-        await newLiveModel.save()
-        socket.emit('create-success', '创建成功回调')
+        // const newLiveModel = new liveModel(config)
+        try {
+            await liveModel.updateOne(config, {}, {upsert: true}).then((res) => console.log(res))
+            // await newLiveModel.upd().then(res => console.log(res))
+            socket.emit('create-success', '创建成功回调')
+        } catch (error) {
+            console.log(error);
+            socket.emit('create-error', '创建成功失败')
+        }
     })
 
     socket.on('join', async (data) => {
