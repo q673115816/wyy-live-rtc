@@ -32,29 +32,42 @@ app.get('/list', async (req, res) => {
 })
 
 io.on('connection', (socket) => {
-
+    console.log('socket.id', socket.id)
     socket.on('create', async (config) => {
         const { uid } = config
         socket.join(uid)
         // const newLiveModel = new liveModel(config)
         try {
-            await liveModel.updateOne(config, {}, {upsert: true}).then((res) => console.log(res))
+            const res = await liveModel.updateOne(config, {}, {upsert: true})
+            console.log('create-success', res);
             // await newLiveModel.upd().then(res => console.log(res))
             socket.emit('create-success', '创建成功回调')
+            io.to(uid).emit('create-success', '房主开播')
         } catch (error) {
-            console.log(error);
+            console.log('create-error', error);
             socket.emit('create-error', '创建成功失败')
         }
     })
 
     socket.on('join', async (data) => {
         const { uid } = data
+        // console.log('join ids', await io.allSockets())
+        // console.log('join io.sockets.adapter.rooms', io.sockets.adapter.rooms)
+        const isActiveRoom = io.sockets.adapter.rooms.has(uid)
         const room = await liveModel.findOne({ uid })
-        if (!room) return socket.emit('join-error', '房间不存在')
+        if(!isActiveRoom) {
+            console.log('room', room)
+            if(room) {
+                await liveModel.findOneAndDelete({ uid }) // 删除该房
+            }
+            socket.emit('join-success', '加入成功回调-房间未开播')
+            return
+        }
+        if (!room) return socket.emit('join-error', '加入失败回调-已开播但查询失败')
         const { viewer } = room
         const users = await io.in(room).allSockets()
         const roomCount = users.size
-        if (roomCount >= viewer) return socket.emit('join-error', '房间满员')
+        if (roomCount >= viewer) return socket.emit('join-error', '加入失败回调-房间满员')
         socket.join(uid)
         socket.emit('join-success', '加入成功回调')
     })
@@ -75,7 +88,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnecting', () => {
-        console.log(socket.rooms); // the Set contains at least the socket ID
+        console.log('disconnecting', socket.rooms); // the Set contains at least the socket ID
     });
 
 
