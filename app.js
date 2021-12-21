@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
         const roomCount = users.size
         if (roomCount >= viewer) return socket.emit('join-error', '加入失败回调-房间满员')
         socket.join(uid)
-        socket.emit('join-success', '加入成功回调')
+        socket.emit('join-success', room)
     })
 
     socket.on('leave', (data) => {
