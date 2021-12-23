@@ -33,6 +33,7 @@ app.get('/list', async (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('socket.id', socket.id)
+    console.log('socket.handshake', socket.handshake)
     socket.on('create', async (config) => {
         const { uid } = config
         socket.join(uid)
@@ -69,7 +70,7 @@ io.on('connection', (socket) => {
         const roomCount = users.size
         if (roomCount >= viewer) return socket.emit('join-error', '加入失败回调-房间满员')
         socket.join(uid)
-        socket.emit('join-success', room)
+        socket.emit('join-success', data)
     })
 
     socket.on('leave', (data) => {
