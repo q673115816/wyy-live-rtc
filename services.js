@@ -4,6 +4,7 @@ require('dotenv').config()
 mongoose.connect(process.env.MONGODB_URI);
 const { Schema, model } = mongoose
 const liveSchema = new Schema({
+    id: String,
     password: String,
     title: String,
     uid: {
@@ -13,7 +14,9 @@ const liveSchema = new Schema({
     user: String,
     viewer: Number,
     banner: String,
-    sdp: String,
+    description: {
+        type: Object
+    },
 }, {
     timestamps: {
         createdAt: true,
