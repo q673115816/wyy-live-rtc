@@ -34,32 +34,34 @@ app.get('/list', async (req, res) => {
 io.on('connection', (socket) => {
     console.log('socket.id', socket.id)
     // console.log('socket.handshake', socket.handshake)
+
     socket.on('create', async (data) => {
-        const { uid } = data
+        const { detail, description, iceCandidate } = data
+        const { uid } = detail
         socket.join(uid)
         // const newLiveModel = new liveModel(data)
         try {
-            const res = await liveModel.updateOne({...data, id: socket.id}, {}, {upsert: true})
-            console.log('create-success', res);
-            // await newLiveModel.upd().then(res => console.log(res))
+            await liveModel
+                .updateOne({ uid }, { ...data.detail, id: socket.id }, { upsert: true })
             socket.emit('create-success', '创建成功回调')
-            socket.to(uid).emit('create-success', '房主开播')
-            socket.to(uid).emit('create-success', '房主开播')
+            socket.broadcast.to(uid).emit('create-success', '房主开播')
+            socket.broadcast.to(uid).emit('info', { description, iceCandidate })
         } catch (error) {
             console.log('create-error', error);
-            socket.emit('create-error', '创建成功失败')
+            socket.emit('create-error', '创建失败')
         }
     })
 
     socket.on('join', async (data) => {
-        const { uid } = data
+        const { detail } = data
+        const { uid } = detail
         // console.log('join ids', await io.allSockets())
         // console.log('join io.sockets.adapter.rooms', io.sockets.adapter.rooms)
         const isActiveRoom = io.sockets.adapter.rooms.has(uid)
         const room = await liveModel.findOne({ uid })
-        if(!isActiveRoom) {
+        if (!isActiveRoom) {
             console.log('room', room)
-            if(room) {
+            if (room) {
                 await liveModel.findOneAndDelete({ uid }) // 删除该房
             }
             socket.emit('join-success', '加入成功回调-房间未开播')
@@ -70,7 +72,7 @@ io.on('connection', (socket) => {
             return
         }
         const { viewer } = room
-        const users = await io.in(room).allSockets()
+        const users = await io.in(uid).allSockets()
         const roomCount = users.size
         if (roomCount >= viewer) {
             socket.emit('join-error', '加入失败回调-房间满员')
@@ -78,14 +80,18 @@ io.on('connection', (socket) => {
         }
         socket.join(uid)
         socket.emit('join-success', room)
+        socket.to(room.id).emit('join-success', { id: socket.id })
     })
 
     socket.on('info', async (data) => {
-        
+        const { to, detail, description, iceCandidate } = data
+        console.log('trigger info revice')
+        socket.to(to).emit('info', { description, iceCandidate })
     })
 
     socket.on('leave', (data) => {
-        const { uid } = data
+        const { detail, description, iceCandidate } = data
+        const { uid } = detail
         socket
             .leave(uid)
         socket
@@ -93,7 +99,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('close', async (data) => {
-        const { uid } = data
+        const { detail, description, iceCandidate } = data
+        const { uid } = detail
         await liveModel.findOneAndDelete({ uid })
         // if (!room) return
         socket.to(uid).emit('close')

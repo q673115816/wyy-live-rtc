@@ -14,9 +14,6 @@ const liveSchema = new Schema({
     user: String,
     viewer: Number,
     banner: String,
-    description: {
-        type: Object
-    },
 }, {
     timestamps: {
         createdAt: true,
