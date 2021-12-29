@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
                 .updateOne({ uid }, { ...data.detail, id: socket.id }, { upsert: true })
             socket.emit('create-success', '创建成功回调')
             socket.broadcast.to(uid).emit('create-success', '房主开播')
-            socket.broadcast.to(uid).emit('info', { description, iceCandidate })
+            socket.broadcast.to(uid).emit('publish', { detail: { id: socket.id }, description, iceCandidate })
         } catch (error) {
             console.log('create-error', error);
             socket.emit('create-error', '创建失败')
@@ -83,10 +83,16 @@ io.on('connection', (socket) => {
         socket.to(room.id).emit('join-success', { id: socket.id })
     })
 
-    socket.on('info', async (data) => {
+    socket.on('publish', async (data) => {
+        const { detail, description, iceCandidate } = data
+        const { uid } = detail
+        socket.broadcast.to(uid).emit('publish', { detail: { id: socket.id }, description, iceCandidate })
+    })
+
+    socket.on('private', async (data) => {
         const { to, detail, description, iceCandidate } = data
-        console.log('trigger info revice')
-        socket.to(to).emit('info', { description, iceCandidate })
+
+        socket.to(to).emit('private', data)
     })
 
     socket.on('leave', (data) => {
