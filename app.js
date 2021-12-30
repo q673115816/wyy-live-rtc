@@ -61,9 +61,7 @@ io.on('connection', (socket) => {
         const room = await liveModel.findOne({ uid })
         if (!isActiveRoom) {
             console.log('room', room)
-            if (room) {
-                await liveModel.findOneAndDelete({ uid }) // 删除该房
-            }
+            if (room) await liveModel.findOneAndDelete({ uid }) // 删除该房
             socket.emit('join-success', '加入成功回调-房间未开播')
             return
         }
@@ -80,19 +78,40 @@ io.on('connection', (socket) => {
         }
         socket.join(uid)
         socket.emit('join-success', room)
-        socket.to(room.id).emit('join-success', { id: socket.id })
+        socket
+            .to(room.id)
+            .emit('join-success', {
+                from: socket.id
+            })
     })
 
     socket.on('publish', async (data) => {
-        const { detail, description, iceCandidate } = data
-        const { uid } = detail
-        socket.broadcast.to(uid).emit('publish', { detail: { id: socket.id }, description, iceCandidate })
+        console.log('publish', data);
+        const { to, detail, description, iceCandidate } = data
+        socket.broadcast
+            .to(to)
+            .emit('publish', {
+                from: socket.id,
+                description,
+                iceCandidate
+            })
     })
 
     socket.on('private', async (data) => {
+        console.log('private', data);
         const { to, detail, description, iceCandidate } = data
 
-        socket.to(to).emit('private', data)
+        socket
+            .to(to)
+            .emit('private', {
+                from: socket.id,
+                description,
+                iceCandidate
+            })
+    })
+
+    socket.on('message', (data) => {
+        socket.broadcast.emit('message', data)
     })
 
     socket.on('leave', (data) => {
