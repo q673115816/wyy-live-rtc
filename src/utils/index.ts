@@ -1,6 +1,6 @@
 import { parse } from 'yaml';
-import path from 'node:path';
-import fs from 'node:fs';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export const getEnv = () => {
   return process.env.RUNNING_ENV;
@@ -8,7 +8,7 @@ export const getEnv = () => {
 
 export const getConfig = () => {
   const environment = getEnv();
-  const yamlPath = path.join(process.cwd(), `./config/.${environment}.yaml`);
+  const yamlPath = path.join(process.cwd(), `./.config/.${environment}.yaml`);
   const file = fs.readFileSync(yamlPath, 'utf-8');
   const config = parse(file);
   return config;

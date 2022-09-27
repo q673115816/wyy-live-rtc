@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { getConfig } from './utils';
+import { CatsModule } from './cats/cats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,6 +13,7 @@ import { getConfig } from './utils';
       load: [getConfig],
     }),
     UserModule,
+    CatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
