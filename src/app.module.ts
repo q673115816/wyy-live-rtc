@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
-import { getConfig } from './utils';
 import { CatsModule } from './cats/cats.module';
+
 @Module({
   imports: [
+    MongooseModule.forRoot('mongodb://localhost/nest'),
     ConfigModule.forRoot({
-      ignoreEnvFile: true,
       isGlobal: true,
-      load: [getConfig],
+      envFilePath: ['.env.development.local', '.env.development'],
     }),
     UserModule,
     CatsModule,
