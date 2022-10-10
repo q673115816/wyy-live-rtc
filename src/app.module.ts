@@ -8,11 +8,11 @@ import { CatsModule } from './cats/cats.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: ['.env.development.local', '.env.development'],
-    }),
+    // MongooseModule.forRoot('mongodb://localhost/nest'),
+    // ConfigModule.forRoot({
+    //   isGlobal: true,
+    //   envFilePath: ['.env.development.local', '.env.development'],
+    // }),
     UserModule,
     CatsModule,
   ],
