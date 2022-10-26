@@ -13,12 +13,12 @@ import { CatsModule } from './cats/cats.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/test', {
-      connectionName: 'cats',
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/cats', {
+      // connectionName: 'cats',
     }),
-    MongooseModule.forRoot('mongodb://localhost/users', {
-      connectionName: 'users',
-    }),
+    // MongooseModule.forRoot('mongodb://127.0.0.1:27017/users', {
+    //   connectionName: 'users',
+    // }),
     // ConfigModule.forRoot({
     //   isGlobal: true,
     //   envFilePath: ['.env.development.local', '.env.development'],
@@ -37,7 +37,7 @@ import { CatsModule } from './cats/cats.module';
     //     ],
     //   },
     // }),
-    UserModule,
+    // UserModule,
     CatsModule,
   ],
   controllers: [AppController],

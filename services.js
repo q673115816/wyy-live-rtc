@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 require('dotenv').config()
 
-mongoose.connect(process.env.MONGODB_URI);
-const { Schema, model } = mongoose
+const { Schema, model, connect } = mongoose
+connect(process.env.MONGODB_URI);
 const liveSchema = new Schema({
     id: String,
     password: String,
