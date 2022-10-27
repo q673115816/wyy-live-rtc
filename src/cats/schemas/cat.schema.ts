@@ -3,6 +3,13 @@ import { Document } from 'mongoose';
 
 export type CatDocument = Cat & Document;
 
+class Characteristics {
+  lifespan: string
+  size: 'small' | 'medium' | 'large'
+  coat: 'short' | 'medium' | 'long'
+  color: string
+}
+
 @Schema()
 export class Cat {
   @Prop()
@@ -13,6 +20,9 @@ export class Cat {
 
   @Prop()
   breed: string;
+
+  @Prop()
+  characteristics: Characteristics
 }
 
 export const CatSchema = SchemaFactory.createForClass(Cat);

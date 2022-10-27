@@ -39,6 +39,10 @@ import { CatsModule } from './cats/cats.module';
     // }),
     // UserModule,
     CatsModule,
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      driver: ApolloDriver
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

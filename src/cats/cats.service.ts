@@ -26,8 +26,9 @@ export class CatsService {
     return this.catModel.findOne({_id: id}).exec()
   }
 
-  update(id: number, updateCatDto: UpdateCatDto) {
-    return `This action updates a #${id} cat`;
+  async update(id: number, updateCatDto: UpdateCatDto): Promise<Cat> {
+    // return `This action updates a #${id} cat`;
+    return this.catModel.findByIdAndUpdate(id, updateCatDto)
   }
 
   async remove(id: number) {
